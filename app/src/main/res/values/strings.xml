@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">关机小助手</string>
-
+    <string name="title_host_list">主机列表</string>
 </resources>
