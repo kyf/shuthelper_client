@@ -1,14 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/no_margin"
     android:paddingRight="@dimen/no_margin"
     android:paddingTop="@dimen/no_margin"
     android:paddingBottom="@dimen/no_margin"
+    android:orientation="vertical"
     tools:context="com.kyf.shuthelper_client.HomeActivity">
 
-    <ListView
+    <com.kyf.shuthelper_client.view.MyListView
         android:id="@+id/hostlistview"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"></com.kyf.shuthelper_client.view.MyListView>
+    <TextView
+        android:id="@+id/nohostview"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/no_host_tip"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/hostnamesize"
+        android:layout_height="match_parent" />
 
-</RelativeLayout>
+</LinearLayout>

@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="list_item_vertical_margin">6dp</dimen>
+
     <dimen name="no_margin">0dp</dimen>
     <dimen name="hostnamesize">16sp</dimen>
     <dimen name="ipsize">14sp</dimen>

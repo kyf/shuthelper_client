@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/list_item_vertical_margin"
+        android:paddingBottom="@dimen/list_item_vertical_margin"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/hostnameview"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/hostnamesize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/hostnameview"
+            android:textColor="@color/black"
+            android:textSize="@dimen/hostnamesize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/ipview"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/ipsize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/ipview"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/ipsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray"/>
 </LinearLayout>

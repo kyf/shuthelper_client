@@ -1,4 +1,4 @@
-package com.kyf.laoyou.view;
+package com.kyf.shuthelper_client.view;
 
 
 import android.app.Dialog;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kyf.laoyou.R;
+import com.kyf.shuthelper_client.R;
 
 /**
  * Created by keyf on 2015/9/29.
