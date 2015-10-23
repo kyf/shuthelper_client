@@ -17,9 +17,6 @@ import com.kyf.shuthelper_client.util.Network;
 import com.kyf.shuthelper_client.view.MyListView;
 import com.kyf.shuthelper_client.view.MyLoading;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
