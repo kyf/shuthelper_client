@@ -1,16 +1,27 @@
 package com.kyf.shuthelper_client;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.kyf.shuthelper_client.adapter.HostListAdapter;
+import com.kyf.shuthelper_client.util.Network;
 import com.kyf.shuthelper_client.view.MyListView;
 import com.kyf.shuthelper_client.view.MyLoading;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,28 +42,80 @@ public class HomeActivity extends BaseActivity implements MyListView.OnRefreshLi
 
     private List<Map<String, String>> dataSet;
 
+    private Network myNetwork;
+
+    private Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1001: {
+                    Toast.makeText(HomeActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                case 1002: {
+                    Toast.makeText(HomeActivity.this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                case 1003: {
+                    List<String> hosts = (List<String>) msg.obj;
+                    for (String host : hosts) {
+                        host = host.trim();
+                        try {
+                            JSONObject jsonObject = new JSONObject(host);
+                            String ip = jsonObject.getString("ip");
+                            String hostname = jsonObject.getString("hostname");
+                            Map<String, String> item = new HashMap<String, String>();
+                            item.put("hostname", hostname);
+                            item.put("ip", ip);
+                            dataSet.add(item);
+                        } catch (JSONException e) {
+
+                        }
+                    }
+
+
+                    if (dataSet.size() > 0) {
+                        nohostview.setVisibility(View.GONE);
+                        hostlistview.setVisibility(View.VISIBLE);
+                    } else {
+                        hostlistview.setVisibility(View.GONE);
+                        nohostview.setVisibility(View.VISIBLE);
+                    }
+                    hostListAdapter.notifyDataSetChanged();
+                    hostlistview.onRefreshComplete();
+                    myLoading.dismiss();
+                    break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mLayout = R.layout.activity_home;
         super.onCreate(savedInstanceState);
 
+        MyApplication app = (MyApplication) getApplication();
+        app.setHandler(myHandler);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.title_host_list);
 
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         hostlistview = (MyListView) findViewById(R.id.hostlistview);
         nohostview = (TextView) findViewById(R.id.nohostview);
         nohostview.setOnClickListener(this);
         myLoading = new MyLoading(this);
         myLoading.setContent(getResources().getString(R.string.find_host_tip));
+        myLoading.setCanceledOnTouchOutside(false);
         myLoading.show();
         hostlistview.setDividerHeight(0);
         hostlistview.setonRefreshListener(this);
         hostlistview.setOnItemClickListener(this);
         dataSet = new ArrayList<Map<String, String>>();
+        myNetwork = new Network(this);
 
         fillDataSet();
 
@@ -61,47 +124,53 @@ public class HomeActivity extends BaseActivity implements MyListView.OnRefreshLi
     }
 
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
         int id = view.getId();
-        switch(id){
-            case R.id.nohostview:{
-                myLoading.show();
+        switch (id) {
+            case R.id.nohostview: {
                 onRefresh();
                 break;
             }
         }
     }
 
-    private void fillDataSet(){
+    private void fillDataSet() {
         dataSet.clear();
-        for(int i = 0; i < 0; i++) {
-            Map<String, String> item = new HashMap<String, String>();
-            item.put("hostname", "我的计算机11111");
-            item.put("ip", "192.168.0.99");
-            dataSet.add(item);
-        }
-        if(dataSet.size() > 0){
-            nohostview.setVisibility(View.GONE);
-            hostlistview.setVisibility(View.VISIBLE);
-        }else{
-            hostlistview.setVisibility(View.GONE);
-            nohostview.setVisibility(View.VISIBLE);
-        }
-        myLoading.dismiss();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myNetwork.listenUDP();
+            }
+        }).start();
+
+        myNetwork.boardcast();
+        hostlistview.setVisibility(View.GONE);
+        nohostview.setVisibility(View.GONE);
     }
 
     @Override
-    public void onRefresh(){
+    public void onRefresh() {
+        myLoading.show();
         fillDataSet();
-        hostListAdapter.notifyDataSetChanged();
-        hostlistview.onRefreshComplete();
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View var2, int var3, long var4){
-        TextView ip = (TextView) parent.findViewById(R.id.ipview);
-        AlertView alert = new AlertView(this);
-
+    public void onItemClick(AdapterView<?> parent, View var2, int position, long var4) {
+        Map<String, String> item = dataSet.get(position - 1);
+        String hostname = item.get("hostname");
+        final String ip = item.get("ip");
+        alertView = new AlertView("提示", "确认关闭主机" + hostname + "?", null, new String[]{"关闭"}, new String[]{"取消"}, this, AlertView.Style.Alert, new OnItemClickListener(){
+            @Override
+            public void onItemClick(Object var1, int var2) {
+                if(var2 == 0) {
+                    myNetwork.setURI("http://" + ip + ":7070/cmd");
+                    myNetwork.sendCmd();
+                }
+            }
+        });
+        alertView.show();
     }
+
+
 
 }
