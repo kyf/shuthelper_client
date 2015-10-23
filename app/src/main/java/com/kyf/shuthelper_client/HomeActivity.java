@@ -156,13 +156,24 @@ public class HomeActivity extends BaseActivity implements MyListView.OnRefreshLi
         Map<String, String> item = dataSet.get(position - 1);
         String hostname = item.get("hostname");
         final String ip = item.get("ip");
-        alertView = new AlertView("提示", "确认关闭主机" + hostname + "?", null, new String[]{"关闭"}, new String[]{"取消"}, this, AlertView.Style.Alert, new OnItemClickListener(){
+        alertView = new AlertView("提示", null, "取消", new String[]{"关闭主机", "重启主机"}, new String[]{}, this, AlertView.Style.ActionSheet, new OnItemClickListener(){
             @Override
             public void onItemClick(Object var1, int var2) {
-                if(var2 == 0) {
-                    myNetwork.setURI("http://" + ip + ":7070/cmd");
-                    myNetwork.sendCmd();
+                String cmd = "";
+                switch(var2) {
+                    case 0: {
+                        cmd = "shut";
+                        break;
+                    }
+                    case 1:{
+                        cmd = "reboot";
+                        break;
+                    }
                 }
+                if(cmd.equals(""))return;
+                myNetwork.setURI("http://" + ip + ":7070/" + cmd);
+                myNetwork.sendCmd();
+
             }
         });
         alertView.show();
