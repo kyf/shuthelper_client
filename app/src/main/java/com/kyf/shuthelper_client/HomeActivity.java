@@ -156,7 +156,7 @@ public class HomeActivity extends BaseActivity implements MyListView.OnRefreshLi
         Map<String, String> item = dataSet.get(position - 1);
         String hostname = item.get("hostname");
         final String ip = item.get("ip");
-        alertView = new AlertView("提示", null, "取消", new String[]{"关闭主机", "重启主机"}, new String[]{}, this, AlertView.Style.ActionSheet, new OnItemClickListener(){
+        alertView = new AlertView("操作", null, "取消", new String[]{"关闭主机", "重启主机"}, new String[]{}, this, AlertView.Style.ActionSheet, new OnItemClickListener(){
             @Override
             public void onItemClick(Object var1, int var2) {
                 String cmd = "";
@@ -176,6 +176,7 @@ public class HomeActivity extends BaseActivity implements MyListView.OnRefreshLi
 
             }
         });
+
         alertView.show();
     }
 
